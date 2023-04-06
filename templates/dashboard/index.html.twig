@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello DashboardController!{% endblock %}
+
+{% block body %}
+<div class="min-h-full">
+
+	<header class="bg-white shadow">
+		<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+			<h1 class="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
+		</div>
+	</header>
+	<main>
+		<div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+        
+        <section>
+            <h2 class="text-xl font-bold">Information profile</h2>
+            <div class="pl-2">
+                <p>Pseudo: {{ app.user.pseudo }}</p>
+                <p>Email: {{ app.user.email }}</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-xl font-bold">Address:</h2>
+            {% if app.user.address %}
+                {% for address in app.user.address %}
+                <div class="pl-2">
+                    <p>Street: {{ address.street }}</p>
+                    <p>City: {{ address.city }}</p>
+                    <p>Zipcode: {{ address.zip }}</p>
+                </div>
+                {% endfor %}
+            {% endif %}
+            <a href="/dashboard/{{ app.user.id }}/address/create" class="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Ajouter une address</a>
+
+
+        </section>
+
+            
+		</div>
+	</main>
+</div>
+
+
+{% endblock %}
