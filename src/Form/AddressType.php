@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Address;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,6 +18,7 @@ class AddressType extends AbstractType
             ->add('street', TextType::class)
             ->add('city', TextType::class)
             ->add('zip', IntegerType::class)
+            ->add('Save', SubmitType::class)
             /* ->add('user') */
         ;
     }

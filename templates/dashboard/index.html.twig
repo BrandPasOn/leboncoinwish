@@ -10,8 +10,8 @@
 			<h1 class="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
 		</div>
 	</header>
-	<main>
-		<div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+	<main class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8" >
+		<div class="w-1/5">
         
         <section>
             <h2 class="text-xl font-bold">Information profile</h2>
@@ -29,10 +29,31 @@
                     <p>Street: {{ address.street }}</p>
                     <p>City: {{ address.city }}</p>
                     <p>Zipcode: {{ address.zip }}</p>
+                    <div class="flex">
+                        <form action="/dashboard/deleteAddress/{{ address.id }}" method="POST" onsubmit="return confirm(`Cette adresse va être supprimer, êtes vous sur de bien vouloir la supprimer ?`)">
+                            <input type="hidden" name="_method" value="DELETE">
+                            {# <input type="hidden" name="_tocken" value="{{ csrf_tocken('delete' = address.id)}}"> #}
+                            <button class="rounded-full bg-red-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Delete</button>
+                        </form>
+                        <a href="/dashboard/updateAddress/{{ address.id }}" class="rounded-full bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 ml-3">Edite</a>
+
+                    </div>
+
+
+
+
                 </div>
+                <div class="relative py-1">
+                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                </div>
+
+
+
                 {% endfor %}
             {% endif %}
-            <a href="/dashboard/{{ app.user.id }}/address/create" class="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Ajouter une address</a>
+            <a href="/dashboard/{{ app.user.id }}/createAddress" class="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add address</a>
 
 
         </section>
