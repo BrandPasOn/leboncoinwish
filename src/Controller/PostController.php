@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Commentary;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Form\CommentaryType;
 use App\Form\PostType;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
@@ -15,15 +17,31 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PostController extends AbstractController
 {
-    #[Route('/post', name: 'app_post')]
-    public function index(): Response
+    #[Route('/post/{post}', name: 'app_post')]
+    public function show(Post $post, CommentaryType $form, Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('post/index.html.twig', [
-            'controller_name' => 'PostController',
+        $comment = new Commentary();
+        $comment->setUser($this->getUser());
+        $comment->setPost($post);
+
+        $form = $this->createForm(CommentaryType::class, $comment);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_post', ['post' => $post->getId()]);
+        }
+
+        return $this->render('post/show.html.twig', [
+            'commentaryForm' => $form->createView(),
+            'post' => $post
         ]);
     }
 
-    #[Route('/dashboard/{user}/post/createPost', name: 'app_post')]
+    #[Route('/dashboard/{user}/post/createPost', name: 'app_post_create')]
     public function create(User $user, PostType $form, Request $request, EntityManagerInterface $entityManager): Response
     {
         $post = new Post();
@@ -50,7 +68,7 @@ class PostController extends AbstractController
     #[Route('/dashboard/{user}/post/{post}/changeStatus', name: 'app_post_changeStatus')]
     public function changeStatus(Post $post, EntityManagerInterface $entityManager): Response
     {
-        if($post->isIsVisible()){ $post->setIsVisible(false); } else { $post->setIsVisible(true); }
+        $post->setIsVisible(!$post->isIsVisible());
 
         $entityManager->persist($post);
         $entityManager->flush();
