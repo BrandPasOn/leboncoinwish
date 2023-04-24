@@ -19,6 +19,8 @@ security:
             
             form_login:
                 # "app_login" is the name of the route created previously
+                use_referer: true
+                default_target_path: app_home
                 login_path: app_login
                 check_path: app_login
             logout:

@@ -6,34 +6,61 @@ use App\Entity\Post;
 use App\Entity\Acquisition;
 use App\Form\AcquisitionType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class AcquisitionController extends AbstractController
 {
     #[Route('/acquisition/{post}/buy', name: 'app_acquisition')]
-    public function buy(Post $post, EntityManagerInterface $entityManager): Response
+    public function buy(Post $post, Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        $acquistion = new Acquisition();
-        $acquistion->setUser($user);
-        $acquistion->setPost($post);
+        $address = $user->getAddress();
+        $id = $user->getId();
+        $bank = $user->getBank();
 
-        /* $form = $this->createForm(AcquisitionType::class, $acquistion);
+        if($address->isEmpty())
+        {
+            return $this->redirectToRoute('app_address_create', ["user" => $id]);
+        } else {
+            
+            $acquistion = new Acquisition();
+            $acquistion->setUser($user);
+            $acquistion->setPost($post);
+    
+            $form = $this->createForm(AcquisitionType::class, $acquistion);
+    
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+                if($bank->getAmount() < $post->getPrice() ) {
 
-            $entityManager->persist($acquistion);
-            $entityManager->flush();
+                    $this->addFlash('error', "You don't have enough money in your bank");
 
-            return $this->redirectToRoute('app_dashboard');
-        } */
 
-        return $this->render('acquisition/index.html.twig', [
-            'controller_name' => 'AcquisitionController',
-        ]);
+                } else {
+
+                    $bank->setAmount($bank->getAmount() - $post->getPrice());
+                    $post->setIsVisible(false);
+
+                    $entityManager->persist($post);
+                    $entityManager->persist($bank);
+                    $entityManager->persist($acquistion);
+                    $entityManager->flush();
+        
+                    return $this->redirectToRoute('app_dashboard');
+                }
+    
+            }
+            return $this->render('acquisition/index.html.twig', [
+                'controller_name' => 'AcquisitionController',
+                'form' => $form->createView(),
+                'bank' => $bank
+            ]);
+        }
+
+        
     }
 }

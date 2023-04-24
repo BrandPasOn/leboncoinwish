@@ -20,6 +20,9 @@ class AddressController extends AbstractController
         $address = New Address();
         $address->setUser($user);
 
+        // get the last route
+        $route = $request->headers->get('referer');
+
         $form = $this->createForm(AddressType::class, $address);
 
         $form->handleRequest($request);
@@ -43,6 +46,9 @@ class AddressController extends AbstractController
         $address = $repo->find($address);
 
         $form = $this->createForm(AddressType::class, $address);
+
+        // get the last route
+        $route = $request->headers->get('referer');
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

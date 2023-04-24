@@ -41,6 +41,11 @@ class Address
         return $this->id;
     }
 
+    public function getDisplayFullAddress(): ?string
+    {
+        return $this->street . " " . $this->city . " " . $this->zip;
+    }
+
     public function getStreet(): ?string
     {
         return $this->street;

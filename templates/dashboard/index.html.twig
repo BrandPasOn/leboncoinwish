@@ -79,8 +79,10 @@
             <div class="text-end">
                 <a href="/dashboard/{{ app.user.id }}/post/createPost" class="rounded-full bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create Post</a>
             </div>
-            <section class="flex gap-8 mt-5 p-5">
+            <section class="flex flex-col mt-5 p-5">
                 {% if app.user.posts %}
+                <h2>Posts you create</h2>
+                <div class="flex gap-8">
                     {% for post in app.user.posts %}
                         <article class="p-2 border-2 w-3/6">
                             <h2 class="text-xl font-bold tracking-tight">{{ post.title }}</h2>
@@ -97,8 +99,22 @@
                             </div>
                         </article>
                     {% endfor %}
+                </div>
                 {% endif %}
             </section>
+            <section class="flex flex-col gap-8 mt-5 p-5">
+                {% if app.user.acquisitions %}
+                    <div class="flex">
+                        {% for acquisition in app.user.acquisitions %}
+                            <article class="p-2 border-2 w-3/6">
+                                <h2 class="text-xl font-bold tracking-tight">{{ acquisition.post.title }}</h2>
+                                <p>{{ acquisition.post.description }}</p>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </section>
+
 
         </div>
 	</main>
